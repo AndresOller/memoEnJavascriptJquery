@@ -1,0 +1,234 @@
+<html>
+<head>
+
+<style type="text/css">
+    body { 
+        background : white;
+        font-family: Tahoma;
+        color : #666666;
+        margin : 0px 0px 0px 0px;
+        font-size: 0.9em;
+        text-align: center;
+        text-align: left;
+        width: 100%;
+        height: auto;
+        height: 100%;
+        min-width: 1024px;
+    }
+
+    #titulo{
+        background-color: #E1E1E1;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        background-color: rgba(0,0,0,.03);
+        box-shadow: 0 1px 6px rgba(0,0,0,.08);
+        height: 90px;
+        min-height: 60px;
+        text-align: center;
+    }
+
+    #tituloDentro{
+        margin: auto;
+        width: 1024px;
+        height: auto;
+        position: relative;
+        font-size: 2em;
+        padding-left: 60px;
+        padding-top: 13px;
+    }
+
+    #contenido{
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        border-bottom: 0px;
+    }
+
+    #contenidoDentro{
+        margin: auto;
+        width: 1024px;
+        height: auto;
+        position: relative;
+        padding: 20px;
+        font-size: 2em;
+        padding-left: 60px;
+    }
+
+    .personaje{
+        width: 155px;
+        height: 190px;
+        background-color: #E1E1E1;
+        float: left;
+        margin: 5px;
+    }
+
+    #tituloDentro img{
+        float: left;
+    }
+    #fallos{
+        float: left;
+        border: 1px solid #e0e0e0;
+        background-color: white;
+        font-size: 15px;
+        padding: 6px;
+        margin-top: 30px;
+        margin-left: 20px;
+        background: #f7f7f7; /* Old browsers */
+        background: -moz-linear-gradient(top,  #f7f7f7 0%, #ffffff 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  #f7f7f7 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  #f7f7f7 0%,#ffffff 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  #f7f7f7 0%,#ffffff 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  #f7f7f7 0%,#ffffff 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+
+    }
+</style>
+
+<script type="text/javascript" src="jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
+<script type="text/javascript">
+
+        /*
+            En caso de añadir una imagen al juego solo es necesario añadir un td en HTML nuevo y la imagen en arrayImagenes
+        */
+
+        var contadorPruebas=0;
+        var anterior=null;
+        var imagenElegida;
+        var contadorFallos = 0;
+        var contadorAciertos =0;
+        var arrayImagenes = ["IMAGENES/abed.png", "IMAGENES/annie.png", "IMAGENES/barney.png", "IMAGENES/collar.png", "IMAGENES/penny.png", "IMAGENES/sheldon.png", "IMAGENES/stark.png", "IMAGENES/ted.png", "IMAGENES/zoey.png"];
+        var cantidadImagenes = arrayImagenes.length;
+        var arrayPosiciones = new Array(cantidadImagenes);
+        $(document).ready(function(){
+            //Crea las posiciones de la array
+                var contadorPosiciones =0;
+                while(contadorPosiciones<cantidadImagenes*2){
+                    var imagenPonemos = Math.floor((Math.random()*cantidadImagenes));
+                    var contadorPosicionesRepetidas =0;
+                    for (var x=0; x<contadorPosiciones; x++){
+                        if (arrayPosiciones[x]==imagenPonemos) contadorPosicionesRepetidas++;
+                    }
+                    if (contadorPosicionesRepetidas<2){
+                        arrayPosiciones[contadorPosiciones] = imagenPonemos;
+                        contadorPosiciones++;
+                    }
+                }
+
+            //Recogemos cuando clique en un td
+            $("td").click(function(){
+                contadorPruebas++;
+                //Recogemos la casilla
+                var casilla = $(this).attr("id");
+                if (contadorPruebas>1){
+                    imagenElegida = arrayPosiciones[casilla];
+                    $("#"+casilla).animate({
+                        width: "toggle",
+                        opacity: "toggle"
+                    }, 500);
+                    $("#"+casilla).animate({
+                        width: "toggle",
+                        opacity: "toggle"
+                    }, 500);
+                    window.setTimeout(function(){
+                        $("#"+casilla).css("background", "url("+arrayImagenes[imagenElegida]+")");
+                    },500);
+                    if (arrayPosiciones[casilla]!=arrayPosiciones[anterior]){
+                        contadorFallos++;
+                        $("#fallosN").html(contadorFallos);
+                        window.setTimeout(function(){
+                            $("#"+casilla).animate({
+                            width: "toggle",
+                            opacity: "toggle"
+                            }, 500);
+                            $("#"+casilla).animate({
+                                width: "toggle",
+                                opacity: "toggle"
+                            }, 500);
+                            $("#"+anterior).animate({
+                                width: "toggle",
+                                opacity: "toggle"
+                            }, 500);
+                            $("#"+anterior).animate({
+                                width: "toggle",
+                                opacity: "toggle"
+                            }, 500);
+                            window.setTimeout(function(){
+                                $("#"+casilla).css("background", "");
+                                $("#"+anterior).css("background", "");
+                            },500);
+                        },1000);
+                    }
+                    else{ 
+                        contadorAciertos++;
+                        $("#aciertos").html(contadorAciertos);
+                    }
+                    contadorPruebas = 0;
+
+                }else{
+                    anterior = casilla;
+                    imagenElegida = arrayPosiciones[casilla];
+                    $("#"+casilla).animate({
+                        width: "toggle",
+                        opacity: "toggle"
+                    }, 500);
+                    $("#"+casilla).animate({
+                        width: "toggle",
+                        opacity: "toggle"
+                    }, 500);
+                    window.setTimeout(function(){
+                        $("#"+casilla).css("background", "url("+arrayImagenes[imagenElegida]+")");
+                    },500);
+                    contadorPruebas++;
+                }
+            })
+        });
+</script>
+
+</head>
+<body>
+    <div id="titulo">
+        <div id="tituloDentro">
+            <img src="IMAGENES/titulo.png"><div id="fallos">Fallos: <span id="fallosN">0</span></div> <div id="fallos">Aciertos: <span id="aciertos">0</span></div>
+        </div>
+    </div>
+    <div id="contenido">
+        <div id="contenidoDentro">
+            <table>
+                <tr>
+                    <td class="personaje" id="0"></td>
+                    <td class="personaje" id="1"></td>
+                    <td class="personaje" id="2"></td>
+                    <td class="personaje" id="3"></td>
+                    <td class="personaje" id="4"></td>
+                    <td class="personaje" id="5"></td>
+                </tr>
+                <tr>
+                    <td class="personaje" id="6"></td>
+                    <td class="personaje" id="7"></td>
+                    <td class="personaje" id="8"></td>
+                    <td class="personaje" id="9"></td>
+                    <td class="personaje" id="10"></td>
+                    <td class="personaje" id="11"></td>
+                </tr>
+                <tr>
+                    <td class="personaje" id="12"></td>
+                    <td class="personaje" id="13"></td>
+                    <td class="personaje" id="14"></td>
+                    <td class="personaje" id="15"></td>
+                    <td class="personaje" id="16"></td>
+                    <td class="personaje" id="17"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+<html>
